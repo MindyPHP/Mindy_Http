@@ -23,6 +23,8 @@ namespace Mindy\Http;
      * @license http://www.yiiframework.com/license/
      */
 use Mindy\Base\Component;
+use Mindy\Helper\Traits\Accessors;
+use Mindy\Helper\Traits\Configurator;
 
 /**
  * UploadedFile represents the information for an uploaded file.
@@ -51,12 +53,14 @@ use Mindy\Base\Component;
  * @package system.web
  * @since 1.0
  */
-class UploadedFile extends Component
+class UploadedFile
 {
+    use Configurator, Accessors;
+
     static private $_files;
 
     private $_name;
-    private $_tempName;
+    private $_temp_name;
     private $_type;
     private $_size;
     private $_error;
@@ -138,25 +142,24 @@ class UploadedFile extends Component
             foreach ($names as $item => $name)
                 self::collectFilesRecursive($key . '[' . $item . ']', $names[$item], $tmp_names[$item], $types[$item], $sizes[$item], $errors[$item]);
         } else
-            self::$_files[$key] = new UploadedFile($names, $tmp_names, $types, $sizes, $errors);
+            self::$_files[$key] = new UploadedFile(['name' => $names, 'temp_name' => $tmp_names, 'type' => $types, 'size' => $sizes, 'error' => $errors]);
     }
 
     /**
      * Constructor.
      * Use {@link getInstance} to get an instance of an uploaded file.
-     * @param string $name the original name of the file being uploaded
-     * @param string $tempName the path of the uploaded file on the server.
-     * @param string $type the MIME-type of the uploaded file (such as "image/gif").
-     * @param integer $size the actual size of the uploaded file in bytes
-     * @param integer $error the error code
+     * @param array $config
+     * @internal param string $name the original name of the file being uploaded
+     * @internal param string $tempName the path of the uploaded file on the server.
+     * @internal param string $type the MIME-type of the uploaded file (such as "image/gif").
+     * @internal param int $size the actual size of the uploaded file in bytes
+     * @internal param int $error the error code
      */
-    public function __construct($name, $tempName, $type, $size, $error)
+    public function __construct(array $config = [])
     {
-        $this->_name = $name;
-        $this->_tempName = $tempName;
-        $this->_type = $type;
-        $this->_size = $size;
-        $this->_error = $error;
+        foreach($config as $key => $value) {
+            $this->{'_' . $key} = $value;
+        }
     }
 
     /**
@@ -183,9 +186,9 @@ class UploadedFile extends Component
     {
         if ($this->_error == UPLOAD_ERR_OK) {
             if ($deleteTempFile)
-                return move_uploaded_file($this->_tempName, $file);
-            elseif (is_uploaded_file($this->_tempName))
-                return copy($this->_tempName, $file);
+                return move_uploaded_file($this->_temp_name, $file);
+            elseif (is_uploaded_file($this->_temp_name))
+                return copy($this->_temp_name, $file);
             else
                 return false;
         } else
@@ -207,7 +210,7 @@ class UploadedFile extends Component
      */
     public function getTempName()
     {
-        return $this->_tempName;
+        return $this->_temp_name;
     }
 
     /**

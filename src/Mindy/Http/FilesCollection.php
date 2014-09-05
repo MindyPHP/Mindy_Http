@@ -15,15 +15,17 @@
 namespace Mindy\Http;
 
 use Mindy\Helper\Collection;
+use Mindy\Helper\Creator;
 use ReflectionClass;
 
 class FilesCollection extends Collection
 {
+    public $uploadClass = '\Mindy\Http\UploadedFile';
+
     public function __construct(array $data = [])
     {
-        $reflect = new ReflectionClass('\Mindy\Base\UploadedFile');
         foreach($data as $item) {
-            $this->data[] = $reflect->newInstance($item);
+            $this->data[] = Creator::createObject($this->uploadClass, $item);
         }
     }
 }
