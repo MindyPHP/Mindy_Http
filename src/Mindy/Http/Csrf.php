@@ -84,7 +84,8 @@ class Csrf
      */
     public function getCsrfToken()
     {
-        if ($this->_csrfToken === null && $cookie = $this->cookies->get($this->csrfTokenName)) {
+        if ($this->_csrfToken === null) {
+            $cookie = $this->cookies->get($this->csrfTokenName);
             if (!$cookie || ($this->_csrfToken = $cookie->value) == null) {
                 $cookie = $this->createCsrfCookie();
                 $this->_csrfToken = $cookie->value;
@@ -166,7 +167,9 @@ class Csrf
     public function validate()
     {
         if (!$this->getIsValid()) {
-            throw new HttpException(400, Mindy::t('yii', 'The CSRF token could not be verified.'));
+            // $msg = Mindy::t('yii', 'The CSRF token could not be verified.');
+            $msg = 'The CSRF token could not be verified.';
+            throw new HttpException(400, $msg);
         }
     }
 }

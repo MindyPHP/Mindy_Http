@@ -851,7 +851,7 @@ class Http extends ApplicationComponent
             $url = $url->getAbsoluteUrl();
         }
 
-        if(strpos($url, '/') !== false) {
+        if(strpos($url, '/') === false) {
             $url = Mindy::app()->urlManager->reverse($url, $data);
         }
         header('Location: ' . $url, true, $statusCode);
