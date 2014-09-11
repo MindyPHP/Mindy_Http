@@ -1,9 +1,9 @@
 <?php
 /**
- * 
+ *
  *
  * All rights reserved.
- * 
+ *
  * @author Falaleev Maxim
  * @email max@studio107.ru
  * @version 1.0
@@ -16,7 +16,7 @@ namespace Mindy\Http;
 
 use Mindy\Helper\Collection;
 use Mindy\Helper\Creator;
-use ReflectionClass;
+use Mindy\Helper\File;
 
 class FilesCollection extends Collection
 {
@@ -24,7 +24,7 @@ class FilesCollection extends Collection
 
     public function __construct(array $data = [])
     {
-        foreach($data as $item) {
+        foreach ($data as $item) {
             $this->data[] = Creator::createObject($this->uploadClass, $item);
         }
     }

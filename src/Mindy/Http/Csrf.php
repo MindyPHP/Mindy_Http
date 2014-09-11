@@ -1,9 +1,9 @@
 <?php
 /**
- * 
+ *
  *
  * All rights reserved.
- * 
+ *
  * @author Falaleev Maxim
  * @email max@studio107.ru
  * @version 1.0
@@ -15,11 +15,9 @@
 namespace Mindy\Http;
 
 use Mindy\Base\Exception\HttpException;
-use Mindy\Base\HttpRequest;
-use Mindy\Base\Mindy;
-use Mindy\Base\SecurityManager;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
+use Mindy\Security\SecurityManager;
 
 class Csrf
 {

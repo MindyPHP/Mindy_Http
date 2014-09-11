@@ -60,7 +60,7 @@ class UploadedFile
     static private $_files;
 
     private $_name;
-    private $_temp_name;
+    private $_tmp_name;
     private $_type;
     private $_size;
     private $_error;
@@ -142,7 +142,7 @@ class UploadedFile
             foreach ($names as $item => $name)
                 self::collectFilesRecursive($key . '[' . $item . ']', $names[$item], $tmp_names[$item], $types[$item], $sizes[$item], $errors[$item]);
         } else
-            self::$_files[$key] = new UploadedFile(['name' => $names, 'temp_name' => $tmp_names, 'type' => $types, 'size' => $sizes, 'error' => $errors]);
+            self::$_files[$key] = new UploadedFile(['name' => $names, 'tmp_name' => $tmp_names, 'type' => $types, 'size' => $sizes, 'error' => $errors]);
     }
 
     /**
@@ -186,9 +186,9 @@ class UploadedFile
     {
         if ($this->_error == UPLOAD_ERR_OK) {
             if ($deleteTempFile)
-                return move_uploaded_file($this->_temp_name, $file);
-            elseif (is_uploaded_file($this->_temp_name))
-                return copy($this->_temp_name, $file);
+                return move_uploaded_file($this->_tmp_name, $file);
+            elseif (is_uploaded_file($this->_tmp_name))
+                return copy($this->_tmp_name, $file);
             else
                 return false;
         } else
@@ -210,7 +210,7 @@ class UploadedFile
      */
     public function getTempName()
     {
-        return $this->_temp_name;
+        return $this->_tmp_name;
     }
 
     /**
