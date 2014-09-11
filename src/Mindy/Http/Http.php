@@ -75,7 +75,7 @@ use Mindy\Locale\Locale;
  * @property string $acceptTypes User browser accept types, null if not present.
  * @property integer $port Port number for insecure requests.
  * @property integer $securePort Port number for secure requests.
- * @property CookieCollection|HttpCookie[] $cookies The cookie collection.
+ * @property CookieCollection|Cookie[] $cookies The cookie collection.
  * @property array $preferredAcceptType The user preferred accept type as an array map, e.g. array('type' => 'application', 'subType' => 'xhtml', 'baseType' => 'xml', 'params' => array('q' => 0.9)).
  * @property array $preferredAcceptTypes An array of all user accepted types (as array maps like array('type' => 'application', 'subType' => 'xhtml', 'baseType' => 'xml', 'params' => array('q' => 0.9)) ) in order of preference.
  * @property string $preferredLanguage The user preferred language.
@@ -116,7 +116,6 @@ class Http extends ApplicationComponent
     {
         parent::init();
         $this->normalizeRequest();
-        $this->is_ajax = $this->getIsAjaxRequest();
         $this->path = $this->getRequestUri();
     }
 
@@ -524,40 +523,12 @@ class Http extends ApplicationComponent
     }
 
     /**
-     * Returns the request URI portion for the currently requested URL.
-     * This refers to the portion that is after the {@link hostInfo host info} part.
-     * It includes the {@link queryString query string} part if any.
-     * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-     * @return string the request URI portion for the currently requested URL.
-     * @throws HttpException if the request URI cannot be determined due to improper server configuration
+     * @DEPRECATED
+     * @return mixed|null|string
      */
     public function getRequestUri()
     {
-        if ($this->_requestUri === null) {
-            if (isset($_SERVER['HTTP_X_REWRITE_URL'])) // IIS
-                $this->_requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
-            elseif (isset($_SERVER['REQUEST_URI'])) {
-                $this->_requestUri = $_SERVER['REQUEST_URI'];
-                if (!empty($_SERVER['HTTP_HOST'])) {
-                    if (strpos($this->_requestUri, $_SERVER['HTTP_HOST']) !== false) {
-                        $this->_requestUri = preg_replace('/^\w+:\/\/[^\/]+/', '', $this->_requestUri);
-                    }
-                } else {
-                    $this->_requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $this->_requestUri);
-                }
-            } elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
-                $this->_requestUri = $_SERVER['ORIG_PATH_INFO'];
-                if (!empty($_SERVER['QUERY_STRING'])) {
-                    $this->_requestUri .= '?' . $_SERVER['QUERY_STRING'];
-                }
-            } else {
-                if (Console::isCli() === false) {
-                    throw new HttpException(Mindy::t('yii', 'HttpRequest is unable to determine the request URI.'));
-                }
-            }
-        }
-
-        return $this->_requestUri;
+        return $this->getPath();
     }
 
     /**
@@ -1258,8 +1229,40 @@ class Http extends ApplicationComponent
         }
     }
 
+    /**
+     * Returns the request URI portion for the currently requested URL.
+     * This refers to the portion that is after the {@link hostInfo host info} part.
+     * It includes the {@link queryString query string} part if any.
+     * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
+     * @return string the request URI portion for the currently requested URL.
+     * @throws HttpException if the request URI cannot be determined due to improper server configuration
+     */
     public function getPath()
     {
-        return $this->getPathInfo();
+        if ($this->_requestUri === null) {
+            if (isset($_SERVER['HTTP_X_REWRITE_URL'])) // IIS
+                $this->_requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+            elseif (isset($_SERVER['REQUEST_URI'])) {
+                $this->_requestUri = $_SERVER['REQUEST_URI'];
+                if (!empty($_SERVER['HTTP_HOST'])) {
+                    if (strpos($this->_requestUri, $_SERVER['HTTP_HOST']) !== false) {
+                        $this->_requestUri = preg_replace('/^\w+:\/\/[^\/]+/', '', $this->_requestUri);
+                    }
+                } else {
+                    $this->_requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $this->_requestUri);
+                }
+            } elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
+                $this->_requestUri = $_SERVER['ORIG_PATH_INFO'];
+                if (!empty($_SERVER['QUERY_STRING'])) {
+                    $this->_requestUri .= '?' . $_SERVER['QUERY_STRING'];
+                }
+            } else {
+                if (Console::isCli() === false) {
+                    throw new HttpException(Mindy::t('yii', 'HttpRequest is unable to determine the request URI.'));
+                }
+            }
+        }
+
+        return $this->_requestUri;
     }
 }
