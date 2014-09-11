@@ -130,7 +130,7 @@ class Request
         return $this->http->getPath();
     }
 
-    public function redirect($url, $data, $statusCode = 302)
+    public function redirect($url, $data = null, $statusCode = 302)
     {
         return $this->http->redirect($url, $data, $statusCode);
     }
