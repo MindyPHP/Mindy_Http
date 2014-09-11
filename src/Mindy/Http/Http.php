@@ -859,6 +859,15 @@ class Http extends ApplicationComponent
     }
 
     /**
+     * @param $url
+     * @return string
+     */
+    public function absoluteUrl($url)
+    {
+        return $this->getHostInfo() . ltrim($url, '/');
+    }
+
+    /**
      * Refreshes the current page.
      * The effect of this method call is the same as user pressing the
      * refresh button on the browser (without post data).
