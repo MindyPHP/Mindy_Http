@@ -130,9 +130,14 @@ class Request
         return $this->http->getPath();
     }
 
+    public function getHost()
+    {
+        return $this->http->getHost();
+    }
+
     public function redirect($url, $data = null, $statusCode = 302)
     {
-        return $this->http->redirect($url, $data, $statusCode);
+        $this->http->redirect($url, $data, $statusCode);
     }
 
     public function getDomain()
