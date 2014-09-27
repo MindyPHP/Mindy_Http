@@ -826,6 +826,10 @@ class Http extends ApplicationComponent
             $url = Mindy::app()->urlManager->reverse($url, $data);
         }
         header('Location: ' . $url, true, $statusCode);
+        $app = Mindy::app();
+        if($app->hasComponent('middleware')) {
+            $app->middleware->processResponse($app->getComponent('request'));
+        }
         die();
     }
 
