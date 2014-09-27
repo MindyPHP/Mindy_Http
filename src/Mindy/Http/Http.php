@@ -835,7 +835,7 @@ class Http extends ApplicationComponent
      */
     public function absoluteUrl($url)
     {
-        return $this->getHostInfo() . ltrim($url, '/');
+        return $this->getHostInfo() . '/' . ltrim($url, '/');
     }
 
     /**
