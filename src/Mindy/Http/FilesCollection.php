@@ -16,16 +16,16 @@ namespace Mindy\Http;
 
 use Mindy\Helper\Collection;
 use Mindy\Helper\Creator;
-use Mindy\Helper\File;
 
 class FilesCollection extends Collection
 {
     public $uploadClass = '\Mindy\Http\UploadedFile';
 
-    public function __construct(array $data = [])
+    public function __construct(array $data = [], array $config = [])
     {
         foreach ($data as $item) {
             $this->data[] = Creator::createObject($this->uploadClass, $item);
         }
+        parent::__construct($config);
     }
 }

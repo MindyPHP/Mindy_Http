@@ -19,12 +19,7 @@ use Mindy\Base\Exception\HttpException;
 
 trait HttpErrors
 {
-    /**
-     * @param $code
-     * @param null $message
-     * @throws HttpException
-     */
-    public function error($code, $message = null)
+    public function errorMessage($code)
     {
         $codes = [
             400 => 'Invalid request. Please do not repeat this request again.',
@@ -32,8 +27,17 @@ trait HttpErrors
             404 => 'The requested page does not exist.',
             500 => 'Error',
         ];
+        return isset($codes[$code]) ? $codes[$code] : 'Unknown error';
+    }
 
+    /**
+     * @param $code
+     * @param null $message
+     * @throws HttpException
+     */
+    public function error($code, $message = null)
+    {
         // CoreModule::t($message === null ? $codes[$code] : $message, [], 'errors')
-        throw new HttpException($code, $message === null ? $codes[$code] : $message);
+        throw new HttpException($code, $message === null ? $this->errorMessage($code) : $message);
     }
 }
