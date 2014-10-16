@@ -14,7 +14,7 @@
 
 namespace Mindy\Http;
 
-use Mindy\Base\Exception\Exception;
+use Mindy\Exception\Exception;
 use Mindy\Helper\Collection;
 use Mindy\Helper\Traits\Configurator;
 

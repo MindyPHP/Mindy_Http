@@ -24,8 +24,8 @@
 namespace Mindy\Http;
 
 use Mindy\Base\ApplicationComponent;
-use Mindy\Base\Exception\Exception;
-use Mindy\Base\Exception\HttpException;
+use Mindy\Exception\Exception;
+use Mindy\Exception\HttpException;
 use Mindy\Base\Mindy;
 use Mindy\Helper\Console;
 use Mindy\Helper\FileHelper;
@@ -431,7 +431,7 @@ class Http extends ApplicationComponent
             elseif (isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']) === 0)
                 $this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']));
             else
-                throw new Exception(Mindy::t('yii', 'CHttpRequest is unable to determine the entry script URL.'));
+                throw new Exception(Mindy::t('base', 'CHttpRequest is unable to determine the entry script URL.'));
         }
         return $this->_scriptUrl;
     }
@@ -476,7 +476,7 @@ class Http extends ApplicationComponent
             elseif (strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0)
                 $pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
             else
-                throw new HttpException(Mindy::t('yii', 'CHttpRequest is unable to determine the path info of the request.'));
+                throw new HttpException(Mindy::t('base', 'CHttpRequest is unable to determine the path info of the request.'));
 
             if ($pathInfo === '/')
                 $pathInfo = '';
@@ -814,7 +814,7 @@ class Http extends ApplicationComponent
      * @param array $data
      * @param integer $statusCode the HTTP status code. Defaults to 302. See {@link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}
      * for details about HTTP status code.
-     * @throws \Mindy\Base\Exception\Exception
+     * @throws \Mindy\Exception\Exception
      */
     public function redirect($url, $data = [], $statusCode = 302)
     {
@@ -1262,7 +1262,7 @@ class Http extends ApplicationComponent
                 }
             } else {
                 if (Console::isCli() === false) {
-                    throw new HttpException(Mindy::t('yii', 'HttpRequest is unable to determine the request URI.'));
+                    throw new HttpException(Mindy::t('base', 'HttpRequest is unable to determine the request URI.'));
                 }
             }
         }

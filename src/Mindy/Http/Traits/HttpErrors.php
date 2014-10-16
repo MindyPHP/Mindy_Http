@@ -15,7 +15,7 @@
 namespace Mindy\Http\Traits;
 
 
-use Mindy\Base\Exception\HttpException;
+use Mindy\Exception\HttpException;
 
 trait HttpErrors
 {

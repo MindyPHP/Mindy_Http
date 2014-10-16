@@ -14,7 +14,8 @@
 
 namespace Mindy\Http;
 
-use Mindy\Base\Exception\HttpException;
+use Mindy\Exception\HttpException;
+use Mindy\Base\Mindy;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Security\SecurityManager;
@@ -165,9 +166,7 @@ class Csrf
     public function validate()
     {
         if (!$this->getIsValid()) {
-            // $msg = Mindy::t('yii', 'The CSRF token could not be verified.');
-            $msg = 'The CSRF token could not be verified.';
-            throw new HttpException(400, $msg);
+            throw new HttpException(400, Mindy::t('base', 'The CSRF token could not be verified.'));
         }
     }
 }
