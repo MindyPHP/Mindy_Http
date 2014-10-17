@@ -14,7 +14,6 @@
 
 namespace Mindy\Http;
 
-
 use Mindy\Base\Mindy;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
@@ -79,7 +78,7 @@ class Request
      */
     public $csrf;
     /**
-     * @var \Modules\User\Components\Flash
+     * @var \Mindy\Http\Flash
      */
     public $flash;
 
@@ -94,8 +93,7 @@ class Request
         $this->delete = new HttpCollection($this->http->getIsDeleteRequest() ? $_POST : []);
         $this->patch = new HttpCollection($this->http->getIsPatchRequest() ? $_POST : []);
 
-        // TODO
-        $this->flash = new \Modules\User\Components\Flash;
+        $this->flash = new Flash;
 
         $sm = Mindy::app()->securityManager;
 
