@@ -18,5 +18,4 @@ use Mindy\Helper\Collection;
 
 class HttpCollection extends Collection
 {
-
 }

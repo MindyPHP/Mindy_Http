@@ -37,6 +37,8 @@ use Mindy\Helper\Traits\Configurator;
  */
 class CookieCollection extends Collection
 {
+    use Configurator;
+
     /**
      * @var bool
      */
@@ -48,7 +50,7 @@ class CookieCollection extends Collection
      */
     public function __construct(array $config = [])
     {
-        parent::__construct($config);
+        $this->configure($config);
         if (!isset($config['data'])) {
             $cookies = [];
             if ($this->enableCookieValidation) {
@@ -62,7 +64,7 @@ class CookieCollection extends Collection
                     $cookies[$name] = new Cookie($name, $value);
                 }
             }
-            $this->exchangeArray($cookies);
+            $this->merge($cookies);
         }
     }
 
