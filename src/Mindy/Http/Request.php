@@ -108,6 +108,11 @@ class Request
         ]);
     }
 
+    public function refresh($anchor = '')
+    {
+        return $this->http->refresh($anchor);
+    }
+
     public function getIsAjax()
     {
         return $this->http->getIsAjaxRequest();
