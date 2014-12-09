@@ -84,6 +84,8 @@ class Request
 
     public function init()
     {
+        $this->session = Mindy::app()->getComponent('session');
+
         $this->http = new Http();
 
         $this->get = new HttpCollection($_GET);
@@ -102,7 +104,6 @@ class Request
             'enableCookieValidation' => $this->enableCookieValidation
         ]);
 
-        $this->session = Mindy::app()->session;
         $this->csrf = new Csrf($sm, $this->cookies, $this->http, [
             'enableCsrfValidation' => $this->enableCsrfValidation
         ]);
