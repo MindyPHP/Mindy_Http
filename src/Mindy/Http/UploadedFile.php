@@ -59,6 +59,7 @@ class UploadedFile
 
     static private $_files;
 
+    public $_file;
     private $_name;
     private $_tmp_name;
     private $_type;
@@ -74,8 +75,9 @@ class UploadedFile
      */
     public static function getInstanceByName($name)
     {
-        if (null === self::$_files)
+        if (null === self::$_files) {
             self::prefetchFiles();
+        }
 
         return isset(self::$_files[$name]) && self::$_files[$name]->getError() != UPLOAD_ERR_NO_FILE ? self::$_files[$name] : null;
     }
