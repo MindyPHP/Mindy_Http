@@ -2,6 +2,10 @@
 
 namespace Mindy\Http;
 
+/**
+ * Interface IFlashStorage
+ * @package Mindy\Http
+ */
 interface IFlashStorage
 {
     public function add($key, $value);

@@ -2,6 +2,10 @@
 
 namespace Mindy\Http;
 
+/**
+ * Class FlashDummyStorage
+ * @package Mindy\Http
+ */
 class FlashDummyStorage implements IFlashStorage
 {
     private $_data = [];

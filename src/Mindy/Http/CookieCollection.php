@@ -1,16 +1,4 @@
 <?php
-/**
- *
- *
- * All rights reserved.
- *
- * @author Falaleev Maxim
- * @email max@studio107.ru
- * @version 1.0
- * @company Studio107
- * @site http://studio107.ru
- * @date 10/06/14.06.2014 14:03
- */
 
 namespace Mindy\Http;
 
@@ -32,7 +20,7 @@ use Mindy\Helper\Traits\Configurator;
  * </pre>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @package system.web
+ * @package Mindy\Http
  * @since 1.0
  */
 class CookieCollection extends Collection

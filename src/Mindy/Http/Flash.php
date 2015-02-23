@@ -7,6 +7,10 @@ use Countable;
 use IteratorAggregate;
 use Mindy\Base\ApplicationComponent;
 
+/**
+ * Class Flash
+ * @package Mindy\Http
+ */
 class Flash extends ApplicationComponent implements IteratorAggregate, Countable
 {
     const FLASH_KEY_PREFIX = 'flash.';

@@ -1,16 +1,4 @@
 <?php
-/**
- *
- *
- * All rights reserved.
- *
- * @author Falaleev Maxim
- * @email max@studio107.ru
- * @version 1.0
- * @company Studio107
- * @site http://studio107.ru
- * @date 05/09/14.09.2014 12:24
- */
 
 namespace Mindy\Http;
 
@@ -20,6 +8,10 @@ use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Security\SecurityManager;
 
+/**
+ * Class Csrf
+ * @package Mindy\Http
+ */
 class Csrf
 {
     use Accessors, Configurator;

@@ -16,6 +16,10 @@ namespace Mindy\Http;
 
 use Mindy\Helper\Collection;
 
+/**
+ * Class HttpCollection
+ * @package Mindy\Http
+ */
 class HttpCollection extends Collection
 {
 }

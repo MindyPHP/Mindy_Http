@@ -2,6 +2,10 @@
 
 namespace Mindy\Http;
 
+/**
+ * Class FlashSessionStorage
+ * @package Mindy\Http
+ */
 class FlashSessionStorage implements IFlashStorage
 {
     const KEY = 'flash';
