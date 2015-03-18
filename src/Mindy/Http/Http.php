@@ -7,7 +7,7 @@ use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
 use Mindy\Base\Mindy;
 use Mindy\Helper\Console;
-use Mindy\Helper\FileHelper;
+use Mindy\Helper\File;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 use Mindy\Locale\Locale;
@@ -1020,7 +1020,7 @@ class Http extends ApplicationComponent
      */
     public function sendFile($fileName, $content, $mimeType = null, $terminate = true)
     {
-        if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($fileName)) === null) {
+        if ($mimeType === null && ($mimeType = File::getMimeTypeByExtension($fileName)) === null) {
             $mimeType = 'text/plain';
         }
 
@@ -1163,7 +1163,7 @@ class Http extends ApplicationComponent
         }
 
         if (!isset($options['mimeType'])) {
-            if (($options['mimeType'] = FileHelper::getMimeTypeByExtension($filePath)) === null) {
+            if (($options['mimeType'] = File::getMimeTypeByExtension($filePath)) === null) {
                 $options['mimeType'] = 'text/plain';
             }
         }
