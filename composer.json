@@ -1,7 +1,7 @@
 {
     "name": "mindy/http",
     "homepage": "https://github.com/studio107/Mindy_Http",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "license": "MIT",
     "autoload": {
         "psr-4": {
