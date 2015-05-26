@@ -3,9 +3,9 @@
 namespace Mindy\Http;
 
 use Mindy\Base\ApplicationComponent;
+use Mindy\Base\Mindy;
 use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
-use Mindy\Base\Mindy;
 use Mindy\Helper\Console;
 use Mindy\Helper\File;
 use Mindy\Helper\Traits\Accessors;
@@ -336,10 +336,10 @@ class Http extends ApplicationComponent
      */
     public function getHostInfo($schema = '', $withPort = false)
     {
-        if($withPort) {
+        if ($withPort) {
             $secure = $this->getIsSecureConnection();
             $port = $this->getPort();
-            if(($secure && $port != 443) || (!$secure && $port != 80)) {
+            if (($secure && $port != 443) || (!$secure && $port != 80)) {
                 $port = ':' . $port;
             } else {
                 $port = '';
@@ -800,12 +800,12 @@ class Http extends ApplicationComponent
             $url = $url->getAbsoluteUrl();
         }
 
-        if(strpos($url, '/') === false) {
+        if (strpos($url, '/') === false) {
             $url = Mindy::app()->urlManager->reverse($url, $data);
         }
         header('Location: ' . $url, true, $statusCode);
         $app = Mindy::app();
-        if($app->hasComponent('middleware')) {
+        if ($app->hasComponent('middleware')) {
             $app->middleware->processResponse($app->getComponent('request'));
         }
         die();
@@ -1250,15 +1250,36 @@ class Http extends ApplicationComponent
 
     public function addLastModified($timestamp)
     {
-        $LastModified = gmdate('D, d M Y H:i:s \G\M\T', $timestamp);
+        $dt = new \DateTime();
+        $dt->setTimestamp((string)$timestamp);
+        $timezone = date_default_timezone_get();
+        $dt->setTimezone(new \DateTimeZone($timezone));
+
+        $LastModified = $dt->format('D, d M Y H:i:s \G\M\T');
         $IfModifiedSince = false;
+
+        if (isset($_ENV['HTTP_IF_MODIFIED_SINCE'])) {
+            $IfModifiedSince = strtotime(substr($_ENV['HTTP_IF_MODIFIED_SINCE'], 5));
+        }
+
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             $IfModifiedSince = strtotime(substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 5));
         }
+
         if ($IfModifiedSince && $IfModifiedSince >= $timestamp) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
-            die();
+            exit;
         }
+
         header('Last-Modified: ' . $LastModified);
+    }
+
+    public function setExpires($timestamp)
+    {
+        $dt = new \DateTime();
+        $dt->setTimestamp((string)$timestamp);
+        $timezone = date_default_timezone_get();
+        $dt->setTimezone(new \DateTimeZone($timezone));
+        header("Expires: " . $dt->format('D, d M Y H:i:s \G\M\T'));
     }
 }

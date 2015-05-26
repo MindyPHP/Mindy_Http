@@ -145,4 +145,9 @@ class Request
     {
         $this->http->addLastModified($timestamp);
     }
+
+    public function setExpires($timestamp)
+    {
+        $this->http->setExpires($timestamp);
+    }
 }
