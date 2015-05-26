@@ -1258,10 +1258,6 @@ class Http extends ApplicationComponent
         $LastModified = $dt->format('D, d M Y H:i:s \G\M\T');
         $IfModifiedSince = false;
 
-        if (isset($_ENV['HTTP_IF_MODIFIED_SINCE'])) {
-            $IfModifiedSince = strtotime(substr($_ENV['HTTP_IF_MODIFIED_SINCE'], 5));
-        }
-
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             $IfModifiedSince = strtotime(substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 5));
         }
