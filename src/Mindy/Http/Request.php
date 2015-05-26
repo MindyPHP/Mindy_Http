@@ -140,4 +140,9 @@ class Request
     {
         return $this->http->getHostInfo();
     }
+
+    public function addLastModified($timestamp)
+    {
+        $this->http->addLastModified($timestamp);
+    }
 }

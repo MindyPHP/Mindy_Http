@@ -1247,4 +1247,18 @@ class Http extends ApplicationComponent
 
         return $this->_requestUri;
     }
+
+    public function addLastModified($timestamp)
+    {
+        $LastModified = gmdate('D, d M Y H:i:s \G\M\T', $timestamp);
+        $IfModifiedSince = false;
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+            $IfModifiedSince = strtotime(substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 5));
+        }
+        if ($IfModifiedSince && $IfModifiedSince >= $timestamp) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
+            die();
+        }
+        header('Last-Modified: ' . $LastModified);
+    }
 }
