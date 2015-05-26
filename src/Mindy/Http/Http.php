@@ -1255,19 +1255,19 @@ class Http extends ApplicationComponent
         $timezone = date_default_timezone_get();
         $dt->setTimezone(new \DateTimeZone($timezone));
 
-        $LastModified = $dt->format('D, d M Y H:i:s \G\M\T');
-        $IfModifiedSince = false;
+        $lastModified = $dt->format('D, d M Y H:i:s \G\M\T');
+        $ifModifiedSince = false;
 
         if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-            $IfModifiedSince = strtotime(substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 5));
+            $ifModifiedSince = strtotime(substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 5));
         }
 
-        if ($IfModifiedSince && $IfModifiedSince >= $timestamp) {
+        if ($ifModifiedSince && $ifModifiedSince >= $timestamp) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
             exit;
         }
 
-        header('Last-Modified: ' . $LastModified);
+        header('Last-Modified: ' . $lastModified);
     }
 
     public function setExpires($timestamp)
