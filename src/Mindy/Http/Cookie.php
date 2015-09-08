@@ -3,6 +3,7 @@
 namespace Mindy\Http;
 
 use Mindy\Helper\Traits\Accessors;
+use Mindy\Helper\Traits\Configurator;
 
 /**
  * A Cookie instance stores a single cookie, including the cookie name, value, domain, path, expire, and secure.
@@ -13,7 +14,7 @@ use Mindy\Helper\Traits\Accessors;
  */
 class Cookie
 {
-    use Accessors;
+    use Configurator, Accessors;
 
     /**
      * @var string name of the cookie
@@ -54,28 +55,14 @@ class Cookie
      * @param array $options the configuration array consisting of name-value pairs
      * that are used to configure this cookie
      */
-    public function __construct($name, $value, $options = array())
+    public function __construct($name, $value, $options = [])
     {
         $this->name = $name;
         $this->value = $value;
-        $this->configure($options);
-    }
 
-    /**
-     * This method can be used to configure the CookieObject with an array
-     * Note: you cannot use this method to set the name and/or the value of the cookie
-     * @param array $options the configuration array consisting of name-value pairs
-     * that are used to configure this cookie
-     * @since 1.1.11
-     */
-    public function configure($options = array())
-    {
-        foreach ($options as $name => $value) {
-            if ($name === 'name' || $name === 'value') {
-                continue;
-            }
-            $this->$name = $value;
-        }
+        unset($options['name'], $options['value']);
+
+        $this->configure(array_merge(session_get_cookie_params(), $options));
     }
 
     /**
