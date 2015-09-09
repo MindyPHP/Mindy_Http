@@ -48,8 +48,6 @@ class Cookie
      */
     public $httpOnly = false;
 
-    public $httponly;
-
     /**
      * Constructor.
      * @param string $name name of this cookie
@@ -65,8 +63,9 @@ class Cookie
         unset($options['name'], $options['value']);
 
         $data = session_get_cookie_params();
+        $data['httpOnly'] = $data['httponly'];
         $data['expire'] = $data['lifetime'];
-        unset($data['lifetime']);
+        unset($data['lifetime'], $data['httponly']);
         $this->configure(array_merge($data, $options));
     }
 
