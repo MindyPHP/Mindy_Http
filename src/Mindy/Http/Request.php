@@ -83,9 +83,9 @@ class Request
         $this->get = new HttpCollection($_GET);
         $this->post = new HttpCollection($_POST);
         $this->files = new FilesCollection($_FILES);
-        $this->put = new HttpCollection($this->http->getIsPutRequest() ? $_POST : []);
-        $this->delete = new HttpCollection($this->http->getIsDeleteRequest() ? $_POST : []);
-        $this->patch = new HttpCollection($this->http->getIsPatchRequest() ? $_POST : []);
+        $this->delete = new HttpCollection($this->http->getIsDeleteRequest() ? $this->prepare() : []);
+        $this->put = new HttpCollection($this->http->getIsPutRequest() ? $this->prepare() : []);
+        $this->patch = new HttpCollection($this->http->getIsPatchRequest() ? $this->prepare() : []);
 
         $this->flash = new Flash;
 
@@ -99,6 +99,22 @@ class Request
         $this->csrf = new Csrf($sm, $this->cookies, $this->http, [
             'enableCsrfValidation' => $this->enableCsrfValidation
         ]);
+    }
+
+    protected function prepare()
+    {
+        $data = [];
+        $raw = file_get_contents('php://input');
+        $exploded = explode('&', $raw);
+        foreach ($exploded as $pair) {
+            $item = explode('=', $pair);
+            if (count($item) == 2) {
+                list($key, $value) = $item;
+                $data[urldecode($key)] = urldecode($value);
+            }
+        }
+
+        return $data;
     }
 
     public function refresh($anchor = '')
@@ -139,15 +155,5 @@ class Request
     public function getDomain()
     {
         return $this->http->getHostInfo();
-    }
-
-    public function addLastModified($timestamp)
-    {
-        $this->http->addLastModified($timestamp);
-    }
-
-    public function setExpires($timestamp)
-    {
-        $this->http->setExpires($timestamp);
     }
 }
