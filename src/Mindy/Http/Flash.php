@@ -5,14 +5,17 @@ namespace Mindy\Http;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Mindy\Base\ApplicationComponent;
+use Mindy\Helper\Traits\Accessors;
+use Mindy\Helper\Traits\Configurator;
 
 /**
  * Class Flash
  * @package Mindy\Http
  */
-class Flash extends ApplicationComponent implements IteratorAggregate, Countable
+class Flash implements IteratorAggregate, Countable
 {
+    use Configurator, Accessors;
+
     const FLASH_KEY_PREFIX = 'flash.';
 
     const SUCCESS = 'success';

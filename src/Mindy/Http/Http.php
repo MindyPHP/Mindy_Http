@@ -2,7 +2,6 @@
 
 namespace Mindy\Http;
 
-use Mindy\Base\ApplicationComponent;
 use Mindy\Base\Mindy;
 use Mindy\Exception\Exception;
 use Mindy\Exception\HttpException;
@@ -64,8 +63,10 @@ use Mindy\Locale\Locale;
  * @package Mindy\Http
  * @since 1.0
  */
-class Http extends ApplicationComponent
+class Http
 {
+    use Configurator, Accessors;
+
     /**
      * @var bool
      */
