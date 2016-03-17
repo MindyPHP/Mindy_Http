@@ -93,7 +93,6 @@ class Http
      */
     public function init()
     {
-        parent::init();
         $this->normalizeRequest();
         $this->path = $this->getRequestUri();
     }
