@@ -1,7 +1,6 @@
 {
   "name": "mindy/http",
-  "homepage": "https://github.com/studio107/Mindy_Http",
-  "version": "1.0",
+  "homepage": "https://github.com/MindyPHP/Mindy_Http",
   "license": "BSD",
   "autoload": {
     "psr-4": {
@@ -33,6 +32,6 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/studio107/Mindy_Http/issues?state=open"
+    "issues": "https://github.com/MindyPHP/Mindy_Http/issues?state=open"
   }
 }
