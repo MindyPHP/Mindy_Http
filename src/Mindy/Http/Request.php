@@ -66,6 +66,10 @@ class Request
      */
     public $http;
     /**
+     * @var \Mindy\Http\Http
+     */
+    public $header;
+    /**
      * @var \Mindy\Http\Csrf
      */
     public $csrf;
@@ -80,6 +84,7 @@ class Request
 
         $this->http = new Http();
 
+        $this->header = new HttpCollection($this->http->getHeaderValues());
         $this->get = new HttpCollection($_GET);
         $this->post = new HttpCollection($_POST);
         $this->files = new FilesCollection($_FILES);
@@ -103,7 +108,7 @@ class Request
 
     public function refresh($anchor = '')
     {
-        return $this->http->refresh($anchor);
+        $this->http->refresh($anchor);
     }
 
     public function getIsAjax()
