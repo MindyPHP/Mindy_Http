@@ -431,6 +431,15 @@ class HttpSession implements IteratorAggregate, ArrayAccess, Countable
     }
 
     /**
+     * @param $key
+     * @return bool
+     */
+    public function has($key)
+    {
+        return isset($_SESSION[$key]);
+    }
+
+    /**
      * Adds a session variable.
      * Note, if the specified name already exists, the old value will be removed first.
      * @param mixed $key session variable name
