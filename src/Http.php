@@ -19,6 +19,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Http
 {
+    use LegacyHttp;
+
     /**
      * @var callable
      */
@@ -54,9 +56,13 @@ class Http
      */
     protected $middleware;
     /**
-     * @var \Psr\Http\Message\ServerRequestInterface
+     * @var Request
      */
     protected $request;
+    /**
+     * @var Response
+     */
+    protected $response;
 
     /**
      * Http constructor.
@@ -107,7 +113,7 @@ class Http
     }
 
     /**
-     * @return \Psr\Http\Message\ServerRequestInterface
+     * @return Request|\Psr\Http\Message\ServerRequestInterface
      */
     public function getRequest()
     {
@@ -214,8 +220,18 @@ class Http
     }
 
     /**
-     * @param $url
-     * @param int $status
+     * Refreshes the current page.
+     * The effect of this method call is the same as user pressing the
+     * refresh button on the browser (without post data).
+     * @param string $anchor the anchor that should be appended to the redirection URL.
+     * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
+     */
+    public function refresh($anchor = '')
+    {
+        $this->redirect($this->getRequest()->getRequestTarget() . $anchor);
+    }
+
+    /**
      * @throws Exception
      */
     public function redirect()
@@ -232,8 +248,12 @@ class Http
                 break;
             case 1:
                 list($url) = $args;
+                if (is_object($url) && method_exists($url, 'getAbsoluteUrl()')) {
+                    $url = $url->getAbsoluteUrl();
+                }
+                break;
         }
-        $response = $this->response
+        $response = $this->getResponse()
             ->withStatus($status)
             ->withHeader('Location', $url);
         $this->send($response);
@@ -296,5 +316,13 @@ class Http
             ->withHeader('Content-Type', 'text/html')
             ->withBody(stream_for($html));
         $this->send($response);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isXhr()
+    {
+        return $this->getRequest()->isXhr();
     }
 }

@@ -14,8 +14,6 @@ use Mindy\Helper\Traits\Configurator;
  */
 class Cookie
 {
-    use Configurator, Accessors;
-
     /**
      * @var string name of the cookie
      */
@@ -66,7 +64,10 @@ class Cookie
         $data['httpOnly'] = $data['httponly'];
         $data['expire'] = $data['lifetime'];
         unset($data['lifetime'], $data['httponly']);
-        $this->configure(array_merge($data, $options));
+        
+        foreach (array_merge($data, $options) as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     /**

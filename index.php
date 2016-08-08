@@ -1,24 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 05.08.16
- * Time: 22:29
- */
-
-//ini_set('session.use_trans_sid', false);
-//ini_set('session.use_cookies', false);
-//ini_set('session.use_only_cookies', true);
-//ini_set('session.cache_limiter', '');
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/Security.php');
 
 use function GuzzleHttp\Psr7\stream_for;
 use Mindy\Http\Http;
+use Mindy\Http\Middleware\Csrf;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr7Middlewares\Middleware\ResponseTime;
+use Psr7Middlewares\Middleware\Honeypot;
+use Psr7Middlewares\Middleware\TrailingSlash;
 use Relay\RelayBuilder;
 
 function d() {
@@ -44,8 +35,8 @@ function d() {
 
 $relay = (new RelayBuilder())->newInstance([
 //    new BasicAuthentication(['max' => '210690']),
-    new ResponseTime(),
-//    (new Honeypot())->autoInsert(true),
+    new TrailingSlash(),
+    (new Honeypot())->autoInsert(true),
     function (ServerRequestInterface $request, ResponseInterface $response, callable $next) {
         $response = $next($request, $response);
         return $response->withHeader('blblbl', 123);
@@ -59,14 +50,14 @@ function getHtml($http) {
     ob_start();
     include('html.php');
     $out = ob_get_clean();
-    foreach ($http->flash->all() as $message) {
-        echo $message['class'] . ' - ' . $message['value'];
-    }
+//    foreach ($http->flash->all() as $message) {
+//        echo $message['class'] . ' - ' . $message['value'];
+//    }
     return $out;
 }
 
 //$http->cookie->set('foo', 'bar');
-$http->session->set('foo', 'bar');
+//$http->session->set('foo', 'bar');
 //$http->flash->set(\Mindy\Http\FlashCollection::SUCCESS, 'bar');
 //$http->session->get('foo');
 //$http->cookie->remove('foo');

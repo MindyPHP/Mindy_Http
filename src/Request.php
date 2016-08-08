@@ -13,6 +13,8 @@ use GuzzleHttp\Psr7\ServerRequest as ServerRequestGuzzle;
 
 class Request extends ServerRequestGuzzle
 {
+    use Legacy;
+
     /**
      * Return a ServerRequest populated with superglobals:
      * $_GET
@@ -38,5 +40,13 @@ class Request extends ServerRequestGuzzle
             ->withQueryParams($_GET)
             ->withParsedBody($_POST)
             ->withUploadedFiles(self::normalizeFiles($_FILES));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isXhr()
+    {
+        return $this->getHeaderLine('X-Requested-With:') === 'XMLHttpRequest';
     }
 }
