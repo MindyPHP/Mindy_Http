@@ -7,6 +7,7 @@
  */
 
 namespace Mindy\Http;
+
 use ArrayAccess;
 use IteratorAggregate;
 

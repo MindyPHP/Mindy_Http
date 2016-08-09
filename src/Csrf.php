@@ -90,11 +90,11 @@ class Csrf
     {
         if ($this->_csrfToken === null) {
             /** @var Cookie $cookie */
-            $cookie = $this->http->cookie->get($this->csrfTokenName);
+            $cookie = $this->http->cookies->get($this->csrfTokenName);
             if (!$cookie || ($this->_csrfToken = $cookie->value) == null) {
                 $cookie = $this->createCsrfCookie();
                 $this->_csrfToken = $cookie->value;
-                $this->http->cookie->set($cookie->name, $cookie);
+                $this->http->cookies->set($cookie->name, $cookie);
             }
         }
 
@@ -142,8 +142,8 @@ class Csrf
                 break;
         }
 
-        if (!empty($userToken) && $this->http->cookie->has($this->csrfTokenName)) {
-            $cookieToken = $this->http->cookie->get($this->csrfTokenName)->value;
+        if (!empty($userToken) && $this->http->cookies->has($this->csrfTokenName)) {
+            $cookieToken = $this->http->cookies->get($this->csrfTokenName)->value;
             // https://github.com/studio107/Mindy_Base/issues/1
             if ($this->validator) {
                 $validator = $this->validator;
@@ -157,20 +157,6 @@ class Csrf
         }
 
         return $valid;
-    }
-
-    /**
-     * Performs the CSRF validation.
-     * This is the event handler responding to {@link CApplication::onBeginRequest}.
-     * The default implementation will compare the CSRF token obtained
-     * from a cookie and from a POST field. If they are different, a CSRF attack is detected.
-     * @throws HttpException
-     */
-    public function validate()
-    {
-        if (!$this->getIsValid()) {
-            throw new HttpException(400, 'The CSRF token could not be verified.');
-        }
     }
 
     /**

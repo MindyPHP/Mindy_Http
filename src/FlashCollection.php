@@ -116,4 +116,28 @@ class FlashCollection implements CollectionInterface
     {
 
     }
+
+    public function success($message)
+    {
+        $this->set(self::SUCCESS, $message);
+        return $this;
+    }
+
+    public function error($message)
+    {
+        $this->set(self::ERROR, $message);
+        return $this;
+    }
+
+    public function info($message)
+    {
+        $this->set(self::INFO, $message);
+        return $this;
+    }
+
+    public function warning($message)
+    {
+        $this->set(self::WARNING, $message);
+        return $this;
+    }
 }

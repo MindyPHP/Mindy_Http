@@ -5,21 +5,9 @@ namespace Mindy\Http;
 /**
  * Class CookieCollection
  * @package Mindy\Http
- * @method get($key, $defaultValue = null) Cookie
  */
 class CookieCollection extends Collection
 {
-    /**
-     * Constructor.
-     * @param array $data
-     */
-    public function __construct(array $data)
-    {
-        foreach ($data as $name => $value) {
-            $this->set($name, $value);
-        }
-    }
-
     /**
      * @param $key
      * @param $value
@@ -33,10 +21,16 @@ class CookieCollection extends Collection
         return $this;
     }
 
-    /**
-     * Deletes a cookie.
-     * @param $key
-     */
+    public function get($key, $defaultValue = null)
+    {
+        $value = parent::get($key, $defaultValue);
+        if (($value instanceof Cookie) === false) {
+            return new Cookie($key, $value);
+        }
+
+        return $value;
+    }
+
     public function remove($key)
     {
         $name = $key;

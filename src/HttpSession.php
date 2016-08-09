@@ -63,6 +63,8 @@ class HttpSession
             $this->{$key} = $value;
         }
 
+        $this->collection = new SessionCollection();
+
         if ($this->handler === null) {
             register_shutdown_function([$this, 'close']);
         }

@@ -10,17 +10,22 @@ namespace Mindy\Http;
 
 use Exception;
 use function GuzzleHttp\Psr7\stream_for;
+use Mindy\Helper\Creator;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Http
  * @package Mindy\Http
- * @property CookieCollection cookie
+ * @property CookieCollection cookies
  */
 class Http
 {
     use LegacyHttp;
 
+    /**
+     * @var bool
+     */
+    public $enableCsrfValidation = true;
     /**
      * @var callable
      */
@@ -32,7 +37,7 @@ class Http
     /**
      * @var CookieCollection
      */
-    public $cookie;
+    public $cookies;
     /**
      * @var Collection
      */
@@ -54,7 +59,7 @@ class Http
     /**
      * @var callable
      */
-    protected $middleware;
+    public $middleware;
     /**
      * @var Request
      */
@@ -70,20 +75,27 @@ class Http
      */
     public function __construct(array $config = [])
     {
+        $session = null;
         foreach ($config as $key => $value) {
+            if ($key === 'session') {
+                if (is_array($value) || is_string($value)) {
+                    $session = Creator::createObject($value);
+                } else {
+                    $session = $value;
+                }
+                continue;
+            }
             $this->{$key} = $value;
         }
 
         $this->request = Request::fromGlobals();
         $this->response = new Response();
-        $this->cookie = new CookieCollection($this->getRequest()->getCookieParams());
+        $this->cookies = new CookieCollection($this->getRequest()->getCookieParams());
         $this->get = new Collection($this->getRequest()->getQueryParams());
         $this->post = new Collection($this->getRequest()->getServerParams());
         $this->files = new Collection($this->getRequest()->getUploadedFiles());
 
-        $sessionData = isset($_SESSION) && $_SESSION ? $_SESSION : [];
-        $this->session = new HttpSession([
-            'collection' => new SessionCollection($sessionData),
+        $this->session = $session ? $session : new HttpSession([
             'autoStart' => false,
             'iniOptions' => [
                 'gc_maxlifetime' => 60 * 60 * 24
@@ -100,6 +112,19 @@ class Http
         $this->csrf = new Csrf($this, [
             'validator' => $csrfValidator
         ]);
+    }
+
+    public function __get($name)
+    {
+        if ($name === 'http') {
+            return $this;
+        } else if ($name === 'requestUri' || $name === 'path') {
+            return $this->getRequest()->getRequestTarget();
+        } else if ($name === 'isAjax') {
+            return $this->getRequest()->isXhr();
+        }
+
+        return $this->{$name};
     }
 
     /**
@@ -160,6 +185,7 @@ class Http
     public function send(ResponseInterface $response)
     {
         $response = $this->withMiddleware($response);
+
         // Send response
         if (!headers_sent()) {
             // Status
@@ -176,6 +202,7 @@ class Http
                 }
             }
         }
+
         // Body
         if (!$this->isEmptyResponse($response)) {
             $body = $response->getBody();

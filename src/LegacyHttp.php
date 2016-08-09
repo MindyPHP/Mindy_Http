@@ -37,4 +37,21 @@ trait LegacyHttp
     {
         return $this->getRequest()->getIsAjax();
     }
+
+    /**
+     * @return bool
+     */
+    public function getRequestType()
+    {
+        return $this->getRequest()->getMethod();
+    }
+
+    /**
+     * Returns the user IP address.
+     * @return string user IP address
+     */
+    public function getUserHostAddress()
+    {
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+    }
 }
