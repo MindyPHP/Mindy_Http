@@ -2,8 +2,8 @@
 
 namespace Mindy\Http\Traits;
 
+use Mindy\Base\Mindy;
 use Mindy\Exception\HttpException;
-use Mindy\Locale\Translate;
 
 /**
  * Class HttpErrors
@@ -13,7 +13,7 @@ trait HttpErrors
 {
     public function errorMessage($code)
     {
-        $t = Translate::getInstance();
+        $t = Mindy::app()->translate;
         $codes = [
             400 => $t->t('main', 'Invalid request. Please do not repeat this request again.'),
             403 => $t->t('main', 'You are not authorized to perform this action.'),

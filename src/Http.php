@@ -10,8 +10,11 @@ namespace Mindy\Http;
 
 use Exception;
 use function GuzzleHttp\Psr7\stream_for;
+use Mindy\Base\Mindy;
 use Mindy\Helper\Creator;
+use Mindy\Helper\Traits\Configurator;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Http
@@ -20,16 +23,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Http
 {
+    use Configurator;
     use LegacyHttp;
 
     /**
      * @var bool
      */
     public $enableCsrfValidation = true;
-    /**
-     * @var callable
-     */
-    public $routeResolver;
     /**
      * @var array
      */
@@ -68,6 +68,10 @@ class Http
      * @var Response
      */
     protected $response;
+    /**
+     * @var bool
+     */
+    private $_sended = false;
 
     /**
      * Http constructor.
@@ -89,7 +93,7 @@ class Http
         }
 
         $this->request = Request::fromGlobals();
-        $this->response = new Response();
+
         $this->cookies = new CookieCollection($this->getRequest()->getCookieParams());
         $this->get = new Collection($this->getRequest()->getQueryParams());
         $this->post = new Collection($this->getRequest()->getServerParams());
@@ -112,6 +116,20 @@ class Http
         $this->csrf = new Csrf($this, [
             'validator' => $csrfValidator
         ]);
+
+        $response = new Response();
+        $this->response = $this->withMiddleware($this->request, $response);
+        if (in_array($this->response->getStatusCode(), [301, 302])) {
+            $this->send($this->response);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsAjax()
+    {
+        return $this->getRequest()->isXhr();
     }
 
     public function __get($name)
@@ -122,6 +140,8 @@ class Http
             return $this->getRequest()->getRequestTarget();
         } else if ($name === 'isAjax') {
             return $this->getRequest()->isXhr();
+        } else if ($name === 'isPost') {
+            return strtoupper($this->getRequest()->getMethod()) === 'POST';
         }
 
         return $this->{$name};
@@ -167,24 +187,30 @@ class Http
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    protected function withMiddleware(ResponseInterface $response)
+    protected function withMiddleware(ServerRequestInterface $request, ResponseInterface $response)
     {
         if ($this->middleware === null) {
             return $response;
         }
 
         $middleware = $this->middleware;
-        return $middleware($this->request, $response);
+        return $middleware($request, $response);
     }
 
     /**
      * Send the response the client
-     *
      * @param ResponseInterface $response
+     * @throws Exception
      */
     public function send(ResponseInterface $response)
     {
-        $response = $this->withMiddleware($response);
+        if ($this->_sended) {
+            throw new Exception('Response already sended');
+        }
+        $this->_sended = true;
+        $this->setResponse($this->withMiddleware($this->getRequest(), $response));
+
+        $response = $this->getResponse();
 
         // Send response
         if (!headers_sent()) {
@@ -235,6 +261,7 @@ class Http
                 }
             }
         }
+        Mindy::app()->end();
     }
 
     /**
@@ -261,25 +288,14 @@ class Http
     /**
      * @throws Exception
      */
-    public function redirect()
+    public function redirect($url, $data = null, $status = 302)
     {
-        $url = $data = $status = null;
-        $args = func_get_args();
-        switch (count($args)) {
-            case 3:
-                list($route, $data, $status) = $args;
-                $url = $this->resolveRoute($route, $data);
-                break;
-            case 2:
-                list($url, $status) = $args;
-                break;
-            case 1:
-                list($url) = $args;
-                if (is_object($url) && method_exists($url, 'getAbsoluteUrl()')) {
-                    $url = $url->getAbsoluteUrl();
-                }
-                break;
+        if (is_object($url) && method_exists($url, 'getAbsoluteUrl')) {
+            $url = $url->getAbsoluteUrl();
+        } else if (is_string($url) && strpos($url, ':') !== false) {
+            $url = $this->resolveRoute($url, $data);
         }
+
         $response = $this->getResponse()
             ->withStatus($status)
             ->withHeader('Location', $url);
@@ -312,10 +328,7 @@ class Http
      */
     public function resolveRoute($route, $data = null)
     {
-        if (!$this->routeResolver) {
-            throw new Exception('Unknown route resolver');
-        }
-        return call_user_func_array($this->routeResolver, [$route, $data]);
+        return Mindy::app()->urlManager->reverse($route, $data);
     }
 
     /**
@@ -325,11 +338,10 @@ class Http
     public function json($data)
     {
         $body = !is_string($data) ? json_encode($data) : $data;
-        $response = $this->response
+        $this->send($this->getResponse()
             ->withStatus(200)
             ->withHeader('Content-Type', 'application/json')
-            ->withBody(stream_for($body));
-        $this->send($response);
+            ->withBody(stream_for($body)));
     }
 
     /**
@@ -338,11 +350,10 @@ class Http
      */
     public function html($html)
     {
-        $response = $this->response
+        $this->send($this->getResponse()
             ->withStatus(200)
             ->withHeader('Content-Type', 'text/html')
-            ->withBody(stream_for($html));
-        $this->send($response);
+            ->withBody(stream_for($html)));
     }
 
     /**

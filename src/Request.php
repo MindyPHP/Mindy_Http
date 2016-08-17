@@ -47,6 +47,6 @@ class Request extends ServerRequestGuzzle
      */
     public function isXhr()
     {
-        return $this->getHeaderLine('X-Requested-With:') === 'XMLHttpRequest';
+        return $this->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
     }
 }
