@@ -16,7 +16,7 @@ class SessionCollection implements CollectionInterface
      */
     public function has($key)
     {
-        return array_key_exists($key, $_SESSION);
+        return array_key_exists($key, $this->all());
     }
 
     /**
