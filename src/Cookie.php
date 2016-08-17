@@ -2,9 +2,6 @@
 
 namespace Mindy\Http;
 
-use Mindy\Helper\Traits\Accessors;
-use Mindy\Helper\Traits\Configurator;
-
 /**
  * A Cookie instance stores a single cookie, including the cookie name, value, domain, path, expire, and secure.
  *
